@@ -71,8 +71,11 @@ document.getElementById('addressForm').addEventListener('submit', async function
     const result = await response.json();
     alert(result.message); // Exibe uma mensagem de sucesso
 
+    // Limpa o formulário
+    document.getElementById('addressForm').reset();
+
     // Limpa os campos do formulário
-    document.getElementById(' .form-control').forEach((input) => {
+    document.querySelectorAll(' .form-control').forEach((input) => {
       input.style.borderColor = '#ddd'; // Borda cinza ao limpar os campos
     });
   } catch (error) {
