@@ -41,11 +41,11 @@ document.getElementById("cep").addEventListener("blur", async function () {
   }
 });
 
-// Adicionar um evento de envio.
+// Adiciona um evento de 'submit' ao formulário de endereço
 document.getElementById('addressForm').addEventListener('submit', async function (e) {
-  e.preventDefault(); // Previne o comportamento padrão de envio do formulário
+  e.preventDefault(); // Impede o recarregamento da página ao enviar o formulário
 
-  // Pega os valores dos campos do formulário
+  // Obtém os valores dos campos do formulário
   const cep = document.getElementById('cep').value;
   const logradouro = document.getElementById('logradouro').value;
   const bairro = document.getElementById('bairro').value;
@@ -53,33 +53,32 @@ document.getElementById('addressForm').addEventListener('submit', async function
   const estado = document.getElementById('estado').value;
 
   try {
-    // Faz uma requisição para o Backend e a consulta do CEP informado
-    const response = await fetch('http://localhost:3000/api/address', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ cep, logradouro, bairro, cidade, estado }),
-    });
+      // Faz uma requisição POST para o backend para salvar o endereço
+      const response = await fetch('http://localhost:3000/api/address', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json', // Define o tipo de conteúdo como JSON
+          },
+          body: JSON.stringify({ cep, logradouro, bairro, cidade, estado }), // Envia os dados do formulário no corpo da requisição
+      });
 
-    if (!response.ok) {
-      // Verifica se a resposta foi bem sucedida
-      throw new Error('Erro ao salvar o endereço'); // Erro ao falhar
-    }
+      if (!response.ok) { // Verifica se a resposta foi bem-sucedida
+          throw new Error('Erro ao salvar o endereço'); // Lança um erro caso a requisição falhe
+      }
 
-    // Converte a resposta da req. para JSON
-    const result = await response.json();
-    alert(result.message); // Exibe uma mensagem de sucesso
+      // Converte a resposta da requisição para JSON
+      const result = await response.json();
+      alert(result.message); // Exibe a mensagem de sucesso retornada pelo backend
 
-    // Limpa o formulário
-    document.getElementById('addressForm').reset();
+      // Limpa os campos do formulário após o envio bem-sucedido
+      document.getElementById('addressForm').reset();
 
-    // Limpa os campos do formulário
-    document.querySelectorAll(' .form-control').forEach((input) => {
-      input.style.borderColor = '#ddd'; // Borda cinza ao limpar os campos
-    });
+      // Remove o feedback visual (borda colorida)
+      document.querySelectorAll('.form-group input').forEach(input => {
+          input.style.borderColor = '#ddd'; // Define a borda de volta para a cor padrão
+      });
   } catch (error) {
-    console.error('Erro ao salvar o endereço:', error); // Exibe o erro no console
-    alert('Erro ao salvar o endereço. Verifique o console para mais detalhes');
+      console.error('Erro ao salvar o endereço:', error); // Exibe o erro no console
+      alert('Erro ao salvar o endereço. Verifique o console para mais detalhes.'); // Alerta ao usuário sobre o erro
   }
 });

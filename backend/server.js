@@ -32,25 +32,17 @@ app.get("/api/cep/:cep", async (req, res) => {
   }
 });
 
-app.post("/api/address", async (req, res) => {
-  const { cep, logradouro, bairro, localidade, uf } = req.body; // Extrai os dados do corpo da requisição
+// Rota POST para salvar um endereço no MongoDB
+app.post('/api/address', async (req, res) => {
+  const { cep, logradouro, bairro, cidade, estado } = req.body; // Extrai as informações do corpo da requisição
 
   try {
-    // Cria um novo endereço no banco de dados
-    const newAddress = new Address ({
-      cep,
-      logradouro,
-      bairro,
-      localidade,
-      uf,
-    });
-    await newAddress.save(); // Salva o endereço no banco de dados
-
-    res
-    .status(201).json({ message: "Endereço salvo com sucesso!" }); // Em caso de sucesso
+    // Cria um novo documento de endereço usando o modelo Address
+    const newAddress = new Address({ cep, logradouro, bairro, cidade, estado });
+    await newAddress.save(); // Salva o novo endereço no MongoDB
+    res.status(201).json({ message: 'Endereço salvo com sucesso!', data: newAddress }); // Retorna sucesso com os dados salvos
   } catch (error) {
-    // Em caso de erro
-    res.status(500).json({ error: "Erro ao criar o endereço!" }); // Em caso de erro
+    res.status(500).json({ error: 'Erro ao salvar o endereço' }); // Retorna erro caso o salvamento falhe
   }
 });
 
