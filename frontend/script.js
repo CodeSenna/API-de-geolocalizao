@@ -40,3 +40,43 @@ document.getElementById("cep").addEventListener("blur", async function () {
     alert("Erro ao buscar o CEP. Verifique o console para mais detalhes");
   }
 });
+
+// Adicionar um evento de envio.
+document.getElementById('addressForm').addEventListener('submit', async function (e) {
+  e.preventDefault(); // Previne o comportamento padrão de envio do formulário
+
+  // Pega os valores dos campos do formulário
+  const cep = document.getElementById('cep').value;
+  const logradouro = document.getElementById('logradouro').value;
+  const bairro = document.getElementById('bairro').value;
+  const cidade = document.getElementById('cidade').value;
+  const estado = document.getElementById('estado').value;
+
+  try {
+    // Faz uma requisição para o Backend e a consulta do CEP informado
+    const response = await fetch('http://localhost:3000/api/address', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ cep, logradouro, bairro, cidade, estado }),
+    });
+
+    if (!response.ok) {
+      // Verifica se a resposta foi bem sucedida
+      throw new Error('Erro ao salvar o endereço'); // Erro ao falhar
+    }
+
+    // Converte a resposta da req. para JSON
+    const result = await response.json();
+    alert(result.message); // Exibe uma mensagem de sucesso
+
+    // Limpa os campos do formulário
+    document.getElementById(' .form-control').forEach((input) => {
+      input.style.borderColor = '#ddd'; // Borda cinza ao limpar os campos
+    });
+  } catch (error) {
+    console.error('Erro ao salvar o endereço:', error); // Exibe o erro no console
+    alert('Erro ao salvar o endereço. Verifique o console para mais detalhes');
+  }
+});
